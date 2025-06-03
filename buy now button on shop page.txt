@@ -1,0 +1,28 @@
+<?php
+
+add_action('woocommerce_after_shop_loop_item', 'add_buy_now_button', 15);
+
+function add_buy_now_button() {
+global $product;
+
+// Get the product ID
+$product_id = $product->get_id();
+
+// Create the "Buy Now" button
+echo '<a href="' . esc_url( add_query_arg( array(
+'add-to-cart' => $product_id,
+'buy_now' => 'true',
+), wc_get_checkout_url() ) ) . '" class="button buy-now-button">Buy Now</a>';
+}
+
+add_action('template_redirect', 'redirect_to_checkout_for_buy_now');
+
+function redirect_to_checkout_for_buy_now() {
+// Check if "buy_now" query parameter is set
+if ( isset( $_GET['buy_now'] ) && 'true' === $_GET['buy_now'] ) {
+wp_safe_redirect( wc_get_checkout_url() );
+exit;
+}
+}
+
+?>
